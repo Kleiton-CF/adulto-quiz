@@ -576,7 +576,7 @@
   function irParaDestino() {
     var url;
     try {
-      if (DESTINO_URL.indexOf("https://resultadosmascunlinos.biz/hui/") !== -1) throw new Error("placeholder");
+      if (DESTINO_URL.indexOf("seu-site.com") !== -1) throw new Error("placeholder");
       url = new URL(DESTINO_URL);
     } catch (e) {
       stepError.textContent = "Destino não configurado (DESTINO_URL no código).";
