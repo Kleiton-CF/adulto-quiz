@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atenção: conteúdo só para maiores de 18 anos</title>
+<meta name="description" content="Confirme que você tem 18 anos ou mais para continuar.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Se usar o Pixel do Meta, cole o código base aqui. Cada etapa já dispara um evento
+     personalizado (fbq trackCustom) sozinha; sem Pixel, nada acontece. -->
+<style>
+  :root {
+    --black: #000000;
+    --red: #D80000;
+    --red-hot: #FF4D4D;
+    --white: #FFFFFF;
+    --grey: #C9C9C9;
+    --field: #141414;
+    --display: "Archivo", "Arial Narrow", Impact, system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --tape: repeating-linear-gradient(-45deg, var(--red) 0 14px, var(--black) 14px 28px);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; background: var(--black); }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  [hidden] { display: none !important; }
+
+  /* Fita de alerta: marca visual de aviso, no topo e no rodapé. */
+  .tape { height: 16px; background: var(--tape); flex: none; }
+
+  .gate {
+    flex: 1;
+    width: 100%;
+    max-width: 28rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  /* ===== Selo 18 (verificação de idade) ===== */
+  .badge {
+    position: relative;
+    width: clamp(8.5rem, 42vw, 11rem);
+    aspect-ratio: 1;
+    margin: 0.5rem auto 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 5px var(--black), 0 0 0 8px var(--red);
+  }
+
+  .badge::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border: 3px solid var(--red-hot);
+    border-radius: 50%;
+    opacity: 0;
+    animation: ping 1.3s ease-out 0.2s 2;
+  }
+
+  .badge-number {
+    font-family: var(--display);
+    font-weight: 900;
+    font-stretch: 75%;
+    font-size: clamp(4.5rem, 24vw, 6.25rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    padding-right: 0.04em;
+  }
+
+  .badge.blocked::before {
+    content: "";
+    position: absolute;
+    left: -4%;
+    right: -4%;
+    top: 50%;
+    height: 12px;
+    background: var(--black);
+    border-top: 3px solid var(--white);
+    border-bottom: 3px solid var(--white);
+    transform: translateY(-50%) rotate(-45deg);
+    z-index: 1;
+  }
+
+  .badge.blocked::after { animation: none; }
+
+  @keyframes ping {
+    0%   { transform: scale(1);    opacity: 0.9; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+
+  h1 { margin: 0; }
+
+  .alert {
+    display: block;
+    font-family: var(--display);
+    font-weight: 900;
+    font-stretch: 70%;
+    font-size: clamp(2.75rem, 16vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    color: var(--red-hot);
+  }
+
+  /* Título mais longo (bloqueio): menor para caber em uma linha por palavra. */
+  .alert-long { font-size: clamp(2.25rem, 12vw, 3.75rem); }
+
+  .rule {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--display);
+    font-weight: 800;
+    font-stretch: 85%;
+    font-size: clamp(1.5rem, 7vw, 1.875rem);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .lede {
+    margin: 0.75rem auto 0;
+    max-width: 26ch;
+    color: var(--grey);
+    font-size: 1.125rem;
+    text-wrap: balance;
+  }
+
+  .dob { margin: 0; padding: 0; border: 0; min-width: 0; }
+  .dob legend {
+    width: 100%;
+    padding: 0;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr;
+    gap: 0.6rem;
+  }
+
+  .field label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.9375rem;
+    color: var(--grey);
+  }
+
+  .field input {
+    width: 100%;
+    height: 3.75rem;
+    padding: 0 0.5rem;
+    border: 2px solid var(--white);
+    border-radius: 4px;
+    background: var(--field);
+    color: var(--white);
+    font: 700 1.625rem/1 var(--body);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .field input::placeholder { color: #8C8C8C; font-weight: 500; }
+  .field input[aria-invalid="true"] { border-color: var(--red-hot); background: #2A0A0A; }
+
+  .field input:focus-visible,
+  .confirm:focus-visible,
+  .skip:focus-visible,
+  #step-title:focus-visible {
+    outline: 3px solid var(--white);
+    outline-offset: 3px;
+  }
+
+  .error {
+    min-height: 1.5rem;
+    margin: 0.75rem 0 0;
+    color: var(--red-hot);
+    font-weight: 600;
+  }
+
+  .confirm {
+    width: 100%;
+    min-height: 3.75rem;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 0;
+    border-radius: 4px;
+    background: var(--red);
+    color: var(--white);
+    font: 800 1.25rem/1.15 var(--body);
+    text-wrap: balance;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .confirm:hover { background: #F00000; }
+  .confirm:active { background: #B00000; }
+  .confirm:disabled { opacity: 0.75; cursor: default; }
+
+  .note {
+    margin: 1.25rem auto 0;
+    max-width: 32ch;
+    font-size: 0.9375rem;
+    color: var(--grey);
+  }
+
+  /* ===== Etapas ===== */
+  .progress {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    max-width: 16rem;
+    margin: 0 auto 0.5rem;
+  }
+
+  .progress span {
+    height: 6px;
+    border-radius: 3px;
+    background: #333333;
+    transition: background 0.2s ease;
+  }
+
+  .progress span.on { background: var(--red-hot); }
+
+  .progress-text {
+    margin: 0 0 1.5rem;
+    font-size: 0.9375rem;
+    color: var(--grey);
+  }
+
+  #step-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-stretch: 85%;
+    font-size: clamp(1.5rem, 7vw, 1.875rem);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  /* A frase aparece num balão de fala, como se tivesse sido dita. */
+  .bubble {
+    position: relative;
+    margin: 1.25rem 0 2rem;
+    padding: 1.5rem 1.25rem;
+    border-radius: 22px 22px 22px 4px;
+    background: var(--red);
+    font-family: var(--display);
+    font-weight: 900;
+    font-stretch: 75%;
+    font-size: clamp(2.5rem, 13vw, 3.5rem);
+    line-height: 1.02;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+    animation: pop 0.3s ease-out;
+  }
+
+  .bubble::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    bottom: -16px;
+    border-style: solid;
+    border-width: 16px 16px 0 0;
+    border-color: var(--red) transparent transparent transparent;
+  }
+
+  .support {
+    margin: -0.75rem auto 1.75rem;
+    max-width: 28ch;
+    color: var(--grey);
+    font-size: 1.125rem;
+    text-wrap: balance;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.92); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .skip {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 0;
+    background: none;
+    color: var(--grey);
+    font: 500 1rem/1.2 var(--body);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .badge::after { animation: none; }
+    .bubble { animation: none; }
+    .confirm, .progress span { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <!--
+    Esta página mostra exatamente o mesmo conteúdo para todos os visitantes.
+    Não há detecção de bot, de revisor ou de país: ela confirma a maioridade,
+    faz as 3 perguntas e leva a pessoa para a página de destino.
+  -->
+  <div class="tape" aria-hidden="true"></div>
+
+  <main class="gate">
+    <div class="badge" id="badge" aria-hidden="true"><span class="badge-number">18</span></div>
+
+    <!-- 1. Verificação de idade -->
+    <section id="view-form" aria-labelledby="titulo">
+      <h1 id="titulo">
+        <span class="alert">Atenção</span>
+        <span class="rule">Só para maiores de 18 anos</span>
+      </h1>
+      <p class="lede">Este conteúdo trata de sexualidade e intimidade adulta.</p>
+
+      <form id="age-form" novalidate style="margin-top:1.5rem">
+        <fieldset class="dob">
+          <legend>Qual é a sua data de nascimento?</legend>
+          <div class="fields">
+            <div class="field">
+              <label for="dia">Dia</label>
+              <input id="dia" name="dia" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="bday-day" placeholder="DD" required>
+            </div>
+            <div class="field">
+              <label for="mes">Mês</label>
+              <input id="mes" name="mes" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="bday-month" placeholder="MM" required>
+            </div>
+            <div class="field">
+              <label for="ano">Ano</label>
+              <input id="ano" name="ano" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="bday-year" placeholder="AAAA" required>
+            </div>
+          </div>
+        </fieldset>
+        <p id="age-error" class="error" role="alert"></p>
+        <button type="submit" class="confirm" id="confirm">Confirmar minha idade</button>
+      </form>
+
+      <p class="note">Ao continuar, você declara ter 18 anos ou mais. Sua data é conferida só no seu aparelho e não é guardada.</p>
+    </section>
+
+    <!-- 2. Etapas (uma frase por tela) -->
+    <section id="view-steps" aria-live="polite" hidden>
+      <div class="progress" id="progress" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="progress-text" id="progress-text">1 de 3</p>
+
+      <h1 id="step-title" tabindex="-1">Você já ouviu a frase</h1>
+      <div class="bubble" id="bubble"><span id="bubble-text">Já acabou?</span></div>
+      <p class="support" id="step-support"></p>
+
+      <button type="button" class="confirm" id="step-yes">Sim</button>
+      <button type="button" class="skip" id="step-no">Não, nunca ouvi isso</button>
+      <p id="step-error" class="error" role="alert"></p>
+    </section>
+
+    <!-- Bloqueio para menores de 18 -->
+    <section id="view-blocked" aria-labelledby="titulo-bloqueio" hidden>
+      <h1 id="titulo-bloqueio">
+        <span class="alert alert-long">Acesso bloqueado</span>
+      </h1>
+      <p class="lede">Você precisa ter 18 anos ou mais para ver este conteúdo.</p>
+    </section>
+  </main>
+
+  <div class="tape" aria-hidden="true"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ===== CONFIGURAÇÃO ===== */
+  // Página para onde a pessoa vai depois das 3 etapas (troque só este link).
+  // UTMs, fbclid e outros parâmetros da URL atual são repassados automaticamente.
+  var DESTINO_URL = "https://seu-site.com/pagina";
+  var IDADE_MINIMA = 18;
+  var BLOQUEIO_HORAS = 24; // quem informa menos de 18 fica bloqueado por este tempo
+
+  var ETAPAS = [
+    { pergunta: "Posso te perguntar uma coisa? Ela já te disse isso?", frase: "Já acabou?",
+      apoio: "Fica entre nós. Sem julgamento.",
+      sim: "Sim, quero mudar isso e nunca mais ouvir isso" },
+    { pergunta: "E isso, ela já falou pra você?", frase: "Tá tudo bem, deixa pra lá.",
+      apoio: "Essa frase costuma doer mais do que parece.",
+      sim: "Sim, quero mudar isso e ficar firme" },
+    { pergunta: "Última pergunta. Já ouviu isso?", frase: "A gente não precisa fazer hoje.",
+      apoio: "Se sim, você não está sozinho. Vamos conversar sobre isso.",
+      sim: "Sim, quero fazer todos os dias" }
+  ];
+  /* ======================== */
+
+  var BLOCK_KEY = "age_gate_block";
+
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $("age-form");
+  var viewForm = $("view-form");
+  var viewSteps = $("view-steps");
+  var viewBlocked = $("view-blocked");
+  var badge = $("badge");
+  var errorEl = $("age-error");
+  var button = $("confirm");
+  var inputs = [$("dia"), $("mes"), $("ano")];
+
+  var stepTitle = $("step-title");
+  var bubbleText = $("bubble-text");
+  var stepYes = $("step-yes");
+  var stepNo = $("step-no");
+  var stepError = $("step-error");
+  var progressText = $("progress-text");
+  var progressBars = $("progress").children;
+  var etapaAtual = 0;
+
+  /* Dispara evento do Pixel do Meta, se o Pixel estiver instalado. */
+  function track(nome) {
+    try { if (typeof window.fbq === "function") window.fbq("trackCustom", nome); } catch (e) { /* ignora */ }
+  }
+
+  /* ===== Idade ===== */
+
+  /* Calcula a idade em anos completos; devolve null se a data não existe ou é futura. */
+  function calcAge(d, m, y, now) {
+    var dt = new Date(y, m - 1, d);
+    if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+    if (dt > now) return null;
+    var age = now.getFullYear() - y;
+    var hadBirthday = now.getMonth() > m - 1 || (now.getMonth() === m - 1 && now.getDate() >= d);
+    if (!hadBirthday) age -= 1;
+    return age;
+  }
+
+  function setError(message, badInputs) {
+    errorEl.textContent = message || "";
+    inputs.forEach(function (input) {
+      input.setAttribute("aria-invalid", badInputs && badInputs.indexOf(input) !== -1 ? "true" : "false");
+    });
+  }
+
+  function isBlocked() {
+    try {
+      var stamp = parseInt(localStorage.getItem(BLOCK_KEY), 10);
+      return !isNaN(stamp) && Date.now() - stamp < BLOQUEIO_HORAS * 3600 * 1000;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function rememberBlock() {
+    try { localStorage.setItem(BLOCK_KEY, String(Date.now())); } catch (e) { /* sem armazenamento */ }
+  }
+
+  function showBlocked() {
+    viewForm.hidden = true;
+    viewSteps.hidden = true;
+    viewBlocked.hidden = false;
+    badge.hidden = false;
+    badge.classList.add("blocked");
+    document.title = "Acesso bloqueado";
+  }
+
+  /* Só números; pula para o próximo campo quando o atual está completo. */
+  inputs.forEach(function (input, index) {
+    input.addEventListener("input", function () {
+      input.value = input.value.replace(/\D/g, "");
+      if (input.value.length === input.maxLength && inputs[index + 1]) {
+        inputs[index + 1].focus();
+      }
+    });
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Backspace" && input.value === "" && inputs[index - 1]) {
+        inputs[index - 1].focus();
+      }
+    });
+  });
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    var dia = inputs[0], mes = inputs[1], ano = inputs[2];
+    var d = parseInt(dia.value, 10);
+    var m = parseInt(mes.value, 10);
+    var y = parseInt(ano.value, 10);
+
+    if (!dia.value || !mes.value || !ano.value) {
+      var empty = inputs.filter(function (input) { return !input.value; });
+      setError("Preencha dia, mês e ano.", empty);
+      empty[0].focus();
+      return;
+    }
+
+    var now = new Date();
+    if (ano.value.length !== 4 || y < 1900 || y > now.getFullYear()) {
+      setError("Digite o ano com 4 números. Ex.: 1990.", [ano]);
+      ano.focus();
+      return;
+    }
+
+    var age = calcAge(d, m, y, now);
+    if (age === null) {
+      setError("Essa data não existe. Confira os números.", inputs);
+      dia.focus();
+      return;
+    }
+
+    setError("");
+
+    if (age < IDADE_MINIMA) {
+      rememberBlock();
+      showBlocked();
+      return;
+    }
+
+    track("IdadeConfirmada");
+    startSteps();
+  });
+
+  /* ===== Etapas ===== */
+
+  function startSteps() {
+    viewForm.hidden = true;
+    badge.hidden = true;
+    viewSteps.hidden = false;
+    document.title = "Responda para continuar";
+    renderStep(0);
+  }
+
+  function renderStep(index) {
+    etapaAtual = index;
+    var etapa = ETAPAS[index];
+    stepTitle.textContent = etapa.pergunta;
+    bubbleText.textContent = etapa.frase;
+    $("step-support").textContent = etapa.apoio;
+    stepYes.textContent = etapa.sim;
+    stepYes.disabled = false;
+    stepError.textContent = "";
+    progressText.textContent = (index + 1) + " de " + ETAPAS.length;
+    for (var i = 0; i < progressBars.length; i++) {
+      progressBars[i].className = i <= index ? "on" : "";
+    }
+    // reinicia a animação do balão a cada etapa
+    var bubble = $("bubble");
+    bubble.style.animation = "none";
+    void bubble.offsetWidth;
+    bubble.style.animation = "";
+    stepTitle.focus({ preventScroll: true });
+    window.scrollTo(0, 0);
+  }
+
+  function irParaDestino() {
+    var url;
+    try {
+      if (DESTINO_URL.indexOf("seu-site.com") !== -1) throw new Error("placeholder");
+      url = new URL(DESTINO_URL);
+    } catch (e) {
+      stepError.textContent = "Destino não configurado (DESTINO_URL no código).";
+      return;
+    }
+    new URLSearchParams(window.location.search).forEach(function (valor, chave) {
+      if (!url.searchParams.has(chave)) url.searchParams.set(chave, valor);
+    });
+    track("DestinoClick");
+    stepYes.disabled = true;
+    stepYes.textContent = "Abrindo a página";
+    window.location.assign(url.toString());
+  }
+
+  stepYes.addEventListener("click", function () {
+    track("Etapa" + (etapaAtual + 1) + "Sim");
+    if (etapaAtual < ETAPAS.length - 1) {
+      renderStep(etapaAtual + 1);
+    } else {
+      irParaDestino();
+    }
+  });
+
+  stepNo.addEventListener("click", function () {
+    track("Etapa" + (etapaAtual + 1) + "Nao");
+    if (etapaAtual < ETAPAS.length - 1) {
+      renderStep(etapaAtual + 1);
+    } else {
+      irParaDestino();
+    }
+  });
+
+  if (isBlocked()) showBlocked();
+})();
+</script>
+</body>
+</html>
